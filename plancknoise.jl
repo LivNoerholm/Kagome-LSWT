@@ -222,7 +222,6 @@ end
 @inline function rhs_dipole!(ΔS, S, ξ, ∇E, integrator)
     (; dt, damping) = integrator
     λ = damping
-
     @. ΔS = - S × (ξ + dt*∇E - dt*λ*(S × ∇E))
 end
 
