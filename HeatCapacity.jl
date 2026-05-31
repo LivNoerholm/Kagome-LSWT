@@ -1,4 +1,4 @@
-using Sunny, GLMakie, StaticArrays, LinearAlgebra, LsqFit, NonlinearSolve, Statistics
+using Sunny, GLMakie, StaticArrays, LinearAlgebra, LsqFit, NonlinearSolve, Statistics, DelimitedFiles
 # Import the planck noise functions
 include("plancknoise.jl")
 
@@ -66,6 +66,8 @@ Emeans_wn = zero(Ts*units.K)
     Emeans_wn[n] = Statistics.mean(buf_wn)
 end
 
+data = hcat(Ts, Emeans_pn, Emeans_wn)
+writedlm("energies.csv", data, ',')
 
 # Plot the results
 fig = Figure(size=(800, 350))
@@ -81,6 +83,10 @@ Ts_mid = (Ts[2:end] + Ts[1:end-1])/2
 ΔTs = Ts[2:end] - Ts[1:end-1]
 C_pn = (Emeans_pn[2:end] - Emeans_pn[1:end-1]) ./ ΔTs
 C_wn = (Emeans_wn[2:end] - Emeans_wn[1:end-1]) ./ ΔTs
+
+cvdata = hcat(Ts_mid, C_pn, C_wn)
+writedlm("heat_capacity.csv", cvdata, ',')
+
 scatter!(ax2, Ts_mid, C_pn; label="Planck Noise")
 scatter!(ax2, Ts_mid, C_wn; label="White Noise")
 
